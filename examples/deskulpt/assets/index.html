@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Deskulpt Canvas</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="card">
+      <h1>Deskulpt Canvas Demo</h1>
+      <p class="muted">
+        This page (HTML/CSS/JS) is served from a <code>deskulpt://</code> custom
+        protocol, backed by <code>rust-embed</code>.
+      </p>
+
+      <section class="row">
+        <label>
+          Name
+          <input id="name" placeholder="Alice" value="Alice" />
+        </label>
+        <button id="btn-greet">Invoke: greet</button>
+      </section>
+
+      <section class="row">
+        <label>
+          A
+          <input id="a" type="number" value="2" />
+        </label>
+        <label>
+          B
+          <input id="b" type="number" value="40" />
+        </label>
+        <button id="btn-add">Invoke: add</button>
+      </section>
+
+      <section class="row">
+        <button id="btn-time">Invoke: time_ms</button>
+        <button id="btn-spam">Spam 10 invokes</button>
+      </section>
+
+      <pre id="log" class="log"></pre>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

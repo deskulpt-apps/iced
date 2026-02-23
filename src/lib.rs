@@ -439,14 +439,14 @@
 //!                     }
 //!                  }
 //!             } else {
-//!                 Task::none()    
+//!                 Task::none()
 //!             }
 //!         }
 //!         Message::Conversation(message) => {
 //!             if let Screen::Conversation(conversation) = &mut state.screen {
 //!                 conversation.update(message).map(Message::Conversation)
 //!             } else {
-//!                 Task::none()    
+//!                 Task::none()
 //!             }
 //!         }
 //!     }
@@ -483,6 +483,7 @@ use iced_winit::runtime;
 
 pub use iced_futures::futures;
 pub use iced_futures::stream;
+pub use iced_winit::EventLoopHooks;
 
 #[cfg(not(any(
     target_arch = "wasm32",

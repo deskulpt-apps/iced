@@ -134,6 +134,16 @@ impl<P: Program> Daemon<P> {
         Self: 'static,
         P::Message: message::MaybeDebug + message::MaybeClone,
     {
+        self.run_with_hooks(())
+    }
+
+    /// Runs the [`Daemon`] with hooks.
+    pub fn run_with_hooks<H>(self, hooks: H) -> Result
+    where
+        Self: 'static,
+        P::Message: message::MaybeDebug + message::MaybeClone,
+        H: shell::EventLoopHooks,
+    {
         #[cfg(feature = "debug")]
         iced_debug::init(iced_debug::Metadata {
             name: P::name(),
@@ -150,7 +160,7 @@ impl<P: Program> Daemon<P> {
         #[cfg(not(any(feature = "tester", feature = "debug")))]
         let program = self;
 
-        Ok(shell::run(program)?)
+        Ok(shell::run_with_hooks(program, hooks)?)
     }
 
     /// Sets the [`Settings`] that will be used to run the [`Daemon`].

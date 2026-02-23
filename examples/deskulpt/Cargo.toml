@@ -1,0 +1,20 @@
+[package]
+name = "deskulpt"
+version = "0.1.0"
+authors = ["Yao Xiao <yx2436@nyu.edu>"]
+edition = "2024"
+publish = false
+
+[dependencies]
+iced.workspace = true
+iced_winit.workspace = true
+wry.version = "0.48"
+rust-embed.version = "8.11"
+mime_guess.version = "2"
+thiserror.version = "2"
+serde.version = "1"
+serde.features = ["derive"]
+serde_json.version = "1"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+gtk.version = "0.18.2"

@@ -64,11 +64,31 @@ use std::mem::ManuallyDrop;
 use std::slice;
 use std::sync::Arc;
 
-/// Runs a [`Program`] with the provided settings.
-pub fn run<P>(program: P) -> Result<(), Error>
+/// Hooks for the event loop.
+pub trait EventLoopHooks: 'static {
+    /// Hook into [`ApplicationHandler::resumed`].
+    ///
+    /// [`ApplicationHandler::resumed`]: winit::application::ApplicationHandler::resumed
+    fn resumed(&mut self, _event_loop: &winit::event_loop::ActiveEventLoop) {}
+
+    /// Hook into [`ApplicationHandler::about_to_wait`].
+    ///
+    /// [`ApplicationHandler::about_to_wait`]: winit::application::ApplicationHandler::about_to_wait
+    fn about_to_wait(
+        &mut self,
+        _event_loop: &winit::event_loop::ActiveEventLoop,
+    ) {
+    }
+}
+
+impl EventLoopHooks for () {}
+
+/// Runs a [`Program`] with the provided settings and hooks.
+pub fn run_with_hooks<P, H>(program: P, hooks: H) -> Result<(), Error>
 where
     P: Program + 'static,
     P::Theme: theme::Base,
+    H: EventLoopHooks,
 {
     use winit::event_loop::EventLoop;
 
@@ -142,7 +162,7 @@ where
 
     let context = task::Context::from_waker(task::noop_waker_ref());
 
-    struct Runner<Message: 'static, F> {
+    struct Runner<Message: 'static, F, H> {
         instance: std::pin::Pin<Box<F>>,
         context: task::Context<'static>,
         id: Option<String>,
@@ -150,6 +170,7 @@ where
         receiver: mpsc::UnboundedReceiver<Control>,
         error: Option<Error>,
         system_theme: Option<oneshot::Sender<theme::Mode>>,
+        hooks: H,
 
         #[cfg(target_arch = "wasm32")]
         canvas: Option<web_sys::HtmlCanvasElement>,
@@ -163,6 +184,7 @@ where
         receiver: control_receiver,
         error: None,
         system_theme: Some(system_theme_sender),
+        hooks,
 
         #[cfg(target_arch = "wasm32")]
         canvas: None,
@@ -170,10 +192,11 @@ where
 
     boot_span.finish();
 
-    impl<Message, F> winit::application::ApplicationHandler<Action<Message>>
-        for Runner<Message, F>
+    impl<Message, F, H> winit::application::ApplicationHandler<Action<Message>>
+        for Runner<Message, F, H>
     where
         F: Future<Output = ()>,
+        H: EventLoopHooks,
     {
         fn resumed(&mut self, event_loop: &winit::event_loop::ActiveEventLoop) {
             if let Some(sender) = self.system_theme.take() {
@@ -184,6 +207,7 @@ where
                         .unwrap_or_default(),
                 );
             }
+            self.hooks.resumed(event_loop);
         }
 
         fn new_events(
@@ -256,12 +280,14 @@ where
                 event_loop,
                 Event::EventLoopAwakened(winit::event::Event::AboutToWait),
             );
+            self.hooks.about_to_wait(event_loop);
         }
     }
 
-    impl<Message, F> Runner<Message, F>
+    impl<Message, F, H> Runner<Message, F, H>
     where
         F: Future<Output = ()>,
+        H: EventLoopHooks,
     {
         fn process_event(
             &mut self,
