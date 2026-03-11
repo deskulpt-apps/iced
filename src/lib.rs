@@ -439,14 +439,14 @@
 //!                     }
 //!                  }
 //!             } else {
-//!                 Task::none()    
+//!                 Task::none()
 //!             }
 //!         }
 //!         Message::Conversation(message) => {
 //!             if let Screen::Conversation(conversation) = &mut state.screen {
 //!                 conversation.update(message).map(Message::Conversation)
 //!             } else {
-//!                 Task::none()    
+//!                 Task::none()
 //!             }
 //!         }
 //!     }
@@ -518,7 +518,9 @@ mod error;
 
 pub mod application;
 pub mod daemon;
+pub mod icon;
 pub mod time;
+pub mod tray;
 pub mod window;
 
 #[cfg(feature = "advanced")]

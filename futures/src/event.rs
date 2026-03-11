@@ -37,6 +37,7 @@ where
             event: Event::Window(window::Event::RedrawRequested(_)),
             ..
         }
+        | subscription::Event::Tray { .. }
         | subscription::Event::SystemThemeChanged(_) => None,
         subscription::Event::Interaction {
             window,
@@ -66,6 +67,7 @@ where
             event,
             status,
         } => f(event, status, window),
+        subscription::Event::Tray { .. } => None,
         subscription::Event::SystemThemeChanged(_) => None,
     })
 }

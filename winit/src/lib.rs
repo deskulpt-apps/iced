@@ -31,6 +31,7 @@ pub mod conversion;
 
 mod error;
 mod proxy;
+mod tray;
 mod window;
 
 pub use clipboard::Clipboard;
@@ -54,6 +55,7 @@ use crate::runtime::image;
 use crate::runtime::system;
 use crate::runtime::user_interface::{self, UserInterface};
 use crate::runtime::{Action, Task};
+use crate::tray::TrayManager;
 
 use program::Program;
 use window::WindowManager;
@@ -510,6 +512,7 @@ async fn run_instance<P>(
     use winit::event_loop::ControlFlow;
 
     let mut window_manager = WindowManager::new();
+    let mut tray_manager = TrayManager::new();
     let mut is_window_opening = !is_daemon;
 
     let mut compositor = None;
@@ -756,6 +759,7 @@ async fn run_instance<P>(
                             &mut control_sender,
                             &mut user_interfaces,
                             &mut window_manager,
+                            &mut tray_manager,
                             &mut ui_caches,
                             &mut is_window_opening,
                             &mut system_theme,
@@ -892,6 +896,7 @@ async fn run_instance<P>(
                                         &mut control_sender,
                                         &mut user_interfaces,
                                         &mut window_manager,
+                                        &mut tray_manager,
                                         &mut ui_caches,
                                         &mut is_window_opening,
                                         &mut system_theme,
@@ -1099,6 +1104,7 @@ async fn run_instance<P>(
                                 &mut control_sender,
                                 &mut user_interfaces,
                                 &mut window_manager,
+                                &mut tray_manager,
                                 &mut ui_caches,
                                 &mut is_window_opening,
                                 &mut system_theme,
@@ -1243,6 +1249,7 @@ async fn run_instance<P>(
                                     &mut control_sender,
                                     &mut user_interfaces,
                                     &mut window_manager,
+                                    &mut tray_manager,
                                     &mut ui_caches,
                                     &mut is_window_opening,
                                     &mut system_theme,
@@ -1356,6 +1363,7 @@ fn run_action<'a, P, C>(
         UserInterface<'a, P::Message, P::Theme, P::Renderer>,
     >,
     window_manager: &mut WindowManager<P, C>,
+    tray_manager: &mut TrayManager,
     ui_caches: &mut FxHashMap<window::Id, user_interface::Cache>,
     is_window_opening: &mut bool,
     system_theme: &mut theme::Mode,
@@ -1699,6 +1707,9 @@ fn run_action<'a, P, C>(
                 }
             }
         },
+        Action::Tray(action) => {
+            tray_manager.handle_action(action);
+        }
         Action::System(action) => match action {
             system::Action::GetInformation(_channel) => {
                 #[cfg(feature = "sysinfo")]

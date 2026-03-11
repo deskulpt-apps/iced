@@ -259,6 +259,10 @@ impl<P: Program + 'static> Emulator<P> {
                         }
                     }
                 }
+                runtime::Action::Tray(action) => {
+                    // TODO
+                    dbg!(action);
+                }
                 runtime::Action::System(action) => {
                     // TODO
                     dbg!(action);

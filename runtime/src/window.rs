@@ -1,10 +1,9 @@
 //! Build window-based GUI applications.
 use crate::core::time::Instant;
 use crate::core::window::{
-    Direction, Event, Icon, Id, Level, Mode, Screenshot, Settings,
-    UserAttention,
+    Direction, Event, Id, Level, Mode, Screenshot, Settings, UserAttention,
 };
-use crate::core::{Point, Size};
+use crate::core::{Icon, Point, Size};
 use crate::futures::Subscription;
 use crate::futures::event;
 use crate::futures::futures::channel::oneshot;

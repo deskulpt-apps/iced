@@ -15,6 +15,7 @@ pub mod image;
 pub mod keyboard;
 pub mod system;
 pub mod task;
+pub mod tray;
 pub mod user_interface;
 pub mod widget;
 pub mod window;
@@ -53,6 +54,9 @@ pub enum Action<T> {
     /// Run a window action.
     Window(window::Action),
 
+    /// Run a tray action.
+    Tray(tray::Action),
+
     /// Run a system action.
     System(system::Action),
 
@@ -84,6 +88,7 @@ impl<T> Action<T> {
             Action::Widget(operation) => Err(Action::Widget(operation)),
             Action::Clipboard(action) => Err(Action::Clipboard(action)),
             Action::Window(action) => Err(Action::Window(action)),
+            Action::Tray(action) => Err(Action::Tray(action)),
             Action::System(action) => Err(Action::System(action)),
             Action::Image(action) => Err(Action::Image(action)),
             Action::Reload => Err(Action::Reload),
@@ -109,6 +114,7 @@ where
                 write!(f, "Action::Clipboard({action:?})")
             }
             Action::Window(_) => write!(f, "Action::Window"),
+            Action::Tray(_) => write!(f, "Action::Tray"),
             Action::System(action) => write!(f, "Action::System({action:?})"),
             Action::Image(_) => write!(f, "Action::Image"),
             Action::Reload => write!(f, "Action::Reload"),

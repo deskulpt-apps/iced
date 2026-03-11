@@ -8,7 +8,7 @@ use crate::core::mouse;
 use crate::core::theme;
 use crate::core::touch;
 use crate::core::window;
-use crate::core::{Event, Point, Size};
+use crate::core::{Event, Icon, Point, Size};
 
 /// Converts some [`window::Settings`] into some `WindowAttributes` from `winit`.
 pub fn window_attributes(
@@ -1243,7 +1243,7 @@ pub fn resize_direction(
 /// Converts some [`window::Icon`] into its `winit` counterpart.
 ///
 /// Returns `None` if there is an error during the conversion.
-pub fn icon(icon: window::Icon) -> Option<winit::window::Icon> {
+pub fn icon(icon: Icon) -> Option<winit::window::Icon> {
     let (pixels, size) = icon.into_raw();
 
     winit::window::Icon::from_rgba(pixels, size.width, size.height).ok()

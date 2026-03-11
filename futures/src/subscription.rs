@@ -5,6 +5,7 @@ pub use tracker::Tracker;
 
 use crate::core::event;
 use crate::core::theme;
+use crate::core::tray;
 use crate::core::window;
 use crate::futures::Stream;
 use crate::{BoxStream, MaybeSend};
@@ -26,6 +27,16 @@ pub enum Event {
 
         /// The [`event::Status`] of the interaction.
         status: event::Status,
+    },
+
+    /// A user interacted with a system tray.
+    Tray {
+        /// The tray that was interacted with.
+        tray: tray::Id,
+        /// The [`Event`] describing the interaction.
+        ///
+        /// [`Event`]: tray::Event
+        event: tray::Event,
     },
 
     /// The system theme has changed.
@@ -122,7 +133,7 @@ impl<T> Subscription<T> {
     ///
     /// ```
     /// # mod iced {
-    /// #     pub use iced_futures::Subscription;   
+    /// #     pub use iced_futures::Subscription;
     /// #     pub use iced_futures::futures;
     /// #     pub use iced_futures::stream;
     /// # }

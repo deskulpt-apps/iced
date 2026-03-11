@@ -1,7 +1,7 @@
 //! Attach an icon to the window of your application.
-pub use crate::core::window::icon::*;
+pub use crate::core::icon::*;
 
-use crate::core::window::icon;
+use crate::core::icon;
 
 use std::io;
 
